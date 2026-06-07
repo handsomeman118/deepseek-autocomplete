@@ -65,4 +65,4 @@ code --install-extension deepseek-autocomplete-0.1.0.vsix
 
 ## 许可证
 
-MIT
+Apache License 2.0

@@ -4,7 +4,7 @@
   "description": "AI-powered code completion using DeepSeek FIM API, similar to GitHub Copilot",
   "version": "0.1.0",
   "publisher": "deepseek-autocomplete",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "engines": {
     "vscode": "^1.85.0"
   },
