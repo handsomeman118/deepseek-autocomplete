@@ -1,0 +1,159 @@
+{
+  "name": "deepseek-autocomplete",
+  "displayName": "DeepSeek AI Autocomplete",
+  "description": "AI-powered code completion using DeepSeek FIM API, similar to GitHub Copilot",
+  "version": "0.1.0",
+  "publisher": "deepseek-autocomplete",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Machine Learning",
+    "Other"
+  ],
+  "activationEvents": [
+    "onLanguage"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "ai-autocomplete.toggle",
+        "title": "AI Autocomplete: Toggle"
+      },
+      {
+        "command": "ai-autocomplete.trigger",
+        "title": "AI Autocomplete: Trigger"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "ai-autocomplete.trigger",
+        "key": "alt+\\",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "ai-autocomplete.toggle",
+        "key": "alt+shift+a",
+        "when": "editorTextFocus"
+      }
+    ],
+    "configuration": {
+      "title": "AI Autocomplete",
+      "properties": {
+        "ai-autocomplete.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "全局开关"
+        },
+        "ai-autocomplete.endpoint": {
+          "type": "string",
+          "default": "https://api.deepseek.com/beta",
+          "markdownDescription": "DeepSeek API Base URL。FIM 功能需要 `/beta` 路径。插件会自动拼接 `/completions`"
+        },
+        "ai-autocomplete.apiKey": {
+          "type": "string",
+          "default": "",
+          "markdownDescription": "API Key。也可通过 `DEEPSEEK_API_KEY` 环境变量或首次使用时引导配置"
+        },
+        "ai-autocomplete.model": {
+          "type": "string",
+          "default": "deepseek-v4-pro",
+          "description": "使用的模型（如 deepseek-v4-pro、deepseek-v4-flash 等）"
+        },
+        "ai-autocomplete.maxTokens": {
+          "type": "number",
+          "default": 1024,
+          "minimum": 16,
+          "maximum": 4096,
+          "description": "单次补全最大 token 数"
+        },
+        "ai-autocomplete.temperature": {
+          "type": "number",
+          "default": 0.2,
+          "minimum": 0,
+          "maximum": 2,
+          "description": "采样温度（0-2），越低越确定。官方默认 1，补全建议调低"
+        },
+        "ai-autocomplete.debounceMs": {
+          "type": "number",
+          "default": 300,
+          "minimum": 100,
+          "maximum": 1000,
+          "description": "输入防抖毫秒数（换行和手动触发不受此限制）"
+        },
+        "ai-autocomplete.contextLines.before": {
+          "type": "number",
+          "default": 50,
+          "minimum": 10,
+          "maximum": 200,
+          "description": "光标前取多少行作为上下文"
+        },
+        "ai-autocomplete.contextLines.after": {
+          "type": "number",
+          "default": 5,
+          "minimum": 0,
+          "maximum": 50,
+          "description": "光标后取多少行作为上下文"
+        },
+        "ai-autocomplete.maxLines": {
+          "type": "number",
+          "default": 15,
+          "minimum": 1,
+          "maximum": 50,
+          "description": "单次补全最大行数（硬上限）"
+        },
+        "ai-autocomplete.enabledLanguages": {
+          "type": "array",
+          "default": ["*"],
+          "items": { "type": "string" },
+          "description": "启用补全的语言，* 表示全部"
+        },
+        "ai-autocomplete.disabledLanguages": {
+          "type": "array",
+          "default": ["markdown", "json", "jsonc", "plaintext", "log"],
+          "items": { "type": "string" },
+          "description": "禁用补全的语言（优先级高于 enabledLanguages）"
+        },
+        "ai-autocomplete.nes.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "NES 关联编辑：修改变量名后自动提示其他引用位置同步修改"
+        },
+        "ai-autocomplete.nes.debounceMs": {
+          "type": "number",
+          "default": 800,
+          "minimum": 300,
+          "maximum": 3000,
+          "description": "NES 触发延迟：编辑完成后等待多久再分析关联"
+        },
+        "ai-autocomplete.nes.timeout": {
+          "type": "number",
+          "default": 30000,
+          "minimum": 5000,
+          "maximum": 120000,
+          "description": "NES pendingEdits 超时时间（毫秒），超时自动清除"
+        },
+        "ai-autocomplete.nes.useLlm": {
+          "type": "boolean",
+          "default": false,
+          "description": "NES 是否调用 LLM 辅助判断复杂关联（会增加 API 调用）"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "package": "vsce package",
+    "lint": "eslint src --ext ts"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/vscode": "^1.85.0",
+    "@vscode/vsce": "^3.0.0",
+    "typescript": "^5.3.0"
+  }
+}
